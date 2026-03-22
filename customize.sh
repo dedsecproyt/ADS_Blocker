@@ -1,19 +1,13 @@
 #!/system/bin/sh
-
-# Checking for installation environment
-if [ $BOOTMODE = true ]; then
- ROOT=$(find `magisk --path` -type d -name "mirror" | head -n 1)
-	ui_print "- Root path: $ROOT"
+HOSTS_DIR="$MODPATH/system/etc"
+ui_print "- Installing hosts patch..."
+mkdir -p "$HOSTS_DIR"
+if [ -f "$MODPATH/hosts" ]; then
+    mv -f "$MODPATH/hosts" "$HOSTS_DIR/hosts"
+    ui_print "- Hosts file moved successfully."
 else
- ROOT=""
+    ui_print "! Error: hosts file not found in module root!"
+    abort
 fi
-
-# Patch default hosts file
-PATH=/system/etc
-	ui_print "- Patching hosts file"
-mkdir -p $MODPATH$PATH
-mv -f $MODPATH/hosts $MODPATH$PATH
-
-# Clean up
-rm -rf $MODPATH/hosts
-echo - Made with love 💗💗
+set_perm "$HOSTS_DIR/hosts" 0 0 0644
+ui_print "- Made with love 💗"
